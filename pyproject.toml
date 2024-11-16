@@ -16,10 +16,11 @@ drf-yasg = "^1.21.8"
 celery = "^5.4.0"
 redis = "^5.2.0"
 django-celery-beat = "^2.7.0"
+django-environ = "^0.11.2"
+black = "^24.10.0"
 
 [tool.poetry.group.dev.dependencies]
 ipython = "^8.28.0"
-black = "^24.10.0"
 coverage = "^7.6.4"
 
 

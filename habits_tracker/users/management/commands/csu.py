@@ -1,5 +1,5 @@
 from django.core.management import BaseCommand
-from users.models import User
+from habits_tracker.users.models import User
 
 
 class Command(BaseCommand):
