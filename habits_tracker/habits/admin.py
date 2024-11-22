@@ -7,10 +7,10 @@ from .models import RegularHabit, RelatedHabit
 @admin.register(RegularHabit)
 class RegulaHabitAdmin(admin.ModelAdmin):
 
-    pass
+    list_display = ["id"]
 
 
 @admin.register(RelatedHabit)
 class RelatedHabitAdmin(admin.ModelAdmin):
 
-    pass
+    list_display = ["id"]

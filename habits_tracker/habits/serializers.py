@@ -5,6 +5,8 @@ from habits_tracker.users.serializers import (
     UserInputSerializer,
 )
 from .models import RegularHabit
+from .validators import OneChosenFieldValidator, DurationTimeValidator
+
 
 
 class RelatedHabitInputSerializer(serializers.Serializer):
@@ -24,30 +26,23 @@ class RelatedHabitOutputSerializer(serializers.Serializer):
 
 class RegularHabitInputSerializer(serializers.ModelSerializer):
 
-    # user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
-    # place = serializers.CharField()
-    # action = serializers.CharField()
-    # start_time = serializers.DateTimeField()
-    # end_time = serializers.DateTimeField()
-    # public = serializers.BooleanField()
-    # award = serializers.CharField()
-    # related_habit = RelatedHabitInputSerializer(required=False)
-    # frequency = serializers.CharField()
-    # is_enjoyable = serializers.BooleanField()
+    related_habit = RelatedHabitInputSerializer(required=False)
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
         model = RegularHabit
-        exclude = ["user"]
+        fields = "__all__"
+        validators = [
+            OneChosenFieldValidator("related_habit", "is_enjoyable"),
+            DurationTimeValidator("start_time", "end_time"),
+        ]
 
 
+class RegularHabitOutputSerializer(serializers.ModelSerializer):
 
-class RegularHabitOutputSerializer(serializers.Serializer):
-    user = UserOutputSerializer()
-    place = serializers.CharField()
-    action = serializers.CharField()
-    start_time = serializers.DateTimeField()
-    end_time = serializers.DateTimeField()
-    award = serializers.CharField()
-    related_habit = RelatedHabitOutputSerializer(required=False)
-    frequency = serializers.CharField()
-    is_enjoyable = serializers.BooleanField()
+    related_habit = RelatedHabitOutputSerializer(read_only=True)
+    user = UserOutputSerializer(read_only=True)
+
+    class Meta:
+        model = RegularHabit
+        fields = "__all__"

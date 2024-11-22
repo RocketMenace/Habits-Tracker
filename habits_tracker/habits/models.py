@@ -14,21 +14,14 @@ NULLABLE = {
 class BaseHabit(models.Model):
     """Abstract base model for habits."""
 
-    user = models.ForeignKey(User, verbose_name="пользователи", on_delete=models.CASCADE)
     place = models.CharField(max_length=200, verbose_name="место")
     action = models.TextField(verbose_name="действие")
     start_time = models.DateTimeField(verbose_name="время начала")
     end_time = models.DateTimeField(verbose_name="время окончания")
     public = models.BooleanField(verbose_name="публичность")
-    award = models.TextField(verbose_name="вознаграждение")
 
     class Meta:
         abstract = True
-        constraints = [
-            models.CheckConstraint(
-                name="start_time_before_end_time", check=Q(start_time__lt=F("end_time"))
-            )
-        ]
 
 
 class RegularHabit(BaseHabit):
@@ -37,6 +30,10 @@ class RegularHabit(BaseHabit):
     class Frequency(models.TextChoices):
         DAILY = "ежедневно"
         WEEKLY = "еженедельно"
+
+    user = models.ForeignKey(
+        User, verbose_name="пользователи", on_delete=models.CASCADE
+    )
 
     related_habit = models.ForeignKey(
         "habits.RelatedHabit",
@@ -52,10 +49,17 @@ class RegularHabit(BaseHabit):
         verbose_name="периодичность",
     )
     is_enjoyable = models.BooleanField(verbose_name="признак приятности")
+    award = models.TextField(verbose_name="вознаграждение")
 
     class Meta:
         verbose_name = "обычная привычка"
         verbose_name_plural = "обычные привычки"
+        constraints = [
+            models.CheckConstraint(
+                name="regular_habit_start_time_before_end_time",
+                check=Q(start_time__lt=F("end_time")),
+            )
+        ]
 
     def __str__(self):
         return f"{self.action} {self.frequency} {self.is_enjoyable=}"
@@ -67,6 +71,12 @@ class RelatedHabit(BaseHabit):
     class Meta:
         verbose_name = "желаемая привычка"
         verbose_name_plural = "желаемые привычки"
+        constraints = [
+            models.CheckConstraint(
+                name="related_habit_start_time_before_end_time",
+                check=Q(start_time__lt=F("end_time")),
+            )
+        ]
 
     def __str__(self):
-        return f"{self.action} {self.award}"
+        return f"{self.action}"
