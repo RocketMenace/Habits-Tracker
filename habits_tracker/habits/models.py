@@ -19,6 +19,7 @@ class BaseHabit(models.Model):
     start_time = models.DateTimeField(verbose_name="время начала")
     end_time = models.DateTimeField(verbose_name="время окончания")
     public = models.BooleanField(verbose_name="публичность")
+    is_enjoyable = models.BooleanField(verbose_name="признак приятности")
 
     class Meta:
         abstract = True
@@ -48,8 +49,7 @@ class RegularHabit(BaseHabit):
         default=Frequency.DAILY,
         verbose_name="периодичность",
     )
-    is_enjoyable = models.BooleanField(verbose_name="признак приятности")
-    award = models.TextField(verbose_name="вознаграждение")
+    award = models.TextField(verbose_name="вознаграждение", **NULLABLE)
 
     class Meta:
         verbose_name = "обычная привычка"
