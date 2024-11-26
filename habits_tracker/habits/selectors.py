@@ -2,10 +2,16 @@ from django.db.models import ForeignKey
 
 from .models import RegularHabit
 from django.db.models import ForeignKey
+from rest_framework.permissions import DjangoObjectPermissions
 
 
-def list_habit():
-    habits = RegularHabit.objects.prefetch_related("related_habit").all()
+def list_habit(user):
+    habits = RegularHabit.objects.prefetch_related("related_habit").filter(user=user)
+    return habits
+
+
+def public_list_habit():
+    habits = RegularHabit.objects.prefetch_related("related_habit").filter(public=True)
     return habits
 
 
@@ -14,8 +20,8 @@ def get_habit(habit_id: int) -> RegularHabit:
     return habit
 
 
-def delete_habit(habit_id: int):
-    RegularHabit.objects.get(pk=habit_id).delete()
+# def delete_habit(habit_id: int):
+#     RegularHabit.objects.get(pk=habit_id).delete()
 
 
 def update_habit(habit_id: int, data: dict):
@@ -43,6 +49,7 @@ def update_habit(habit_id: int, data: dict):
             continue
         if getattr(habit, field) != data[field]:
             setattr(habit, field, data[field])
+    foreign_key_field.pop("user")
     for field_name, value in foreign_key_field.items():
         related_habit = getattr(habit, field_name)
         related_habit.__dict__.update(**value)
