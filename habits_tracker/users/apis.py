@@ -10,8 +10,6 @@ from .selectors import delete_user, list_user, get_user, update_user
 
 class UserListAPIView(APIView):
 
-    permission_classes = [IsAuthenticated]
-
     def get(self, request):
         users = list_user()
         data = UserOutputSerializer(users, many=True).data
@@ -31,16 +29,12 @@ class UserCreateAPIView(APIView):
 
 class UserDeleteAPIView(APIView):
 
-    permission_classes = [IsAuthenticated]
-
     def delete(self, request, user_id):
         delete_user(user_id)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class UserDetailAPIView(APIView):
-
-    permission_classes = [IsAuthenticated]
 
     def get(self, request, user_id):
         user = get_user(user_id)
@@ -49,8 +43,6 @@ class UserDetailAPIView(APIView):
 
 
 class UserUpdateAPIView(APIView):
-
-    permission_classes = [IsAuthenticated]
 
     def put(self, request, user_id):
 

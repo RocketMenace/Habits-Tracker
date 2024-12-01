@@ -43,7 +43,9 @@ INSTALLED_APPS = [
     "habits_tracker.authentication.apps.AuthenticationConfig",
     "habits_tracker.users.apps.UsersConfig",
     "habits_tracker.habits.apps.HabitsConfig",
+    "habits_tracker.tasks.apps",
     # 3rd party
+    "corsheaders",
     "rest_framework",
     "rest_framework_simplejwt",
     "drf_yasg",
@@ -52,6 +54,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -80,6 +83,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "config.wsgi.application"
+
 
 
 # Database
@@ -149,3 +153,6 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+from config.settings.celery import *
+from config.settings.cors import *

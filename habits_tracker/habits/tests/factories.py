@@ -42,10 +42,11 @@ class AbstractHabitFactory(factory.django.DjangoModelFactory):
 
 
 class RelatedHabitFactory(AbstractHabitFactory):
-    is_enjoyable = True
 
     class Meta:
         model = RelatedHabit
+
+    is_enjoyable = True
 
 
 class RegularHabitFactory(AbstractHabitFactory):
@@ -58,6 +59,21 @@ class RegularHabitFactory(AbstractHabitFactory):
     frequency = factory.LazyAttribute(
         lambda _: faker.random_element(["еженедельно", "ежедневно"])
     )
+    is_enjoyable = False
+
+
+class RegularHabitWithAwardFactory(AbstractHabitFactory):
+
+    class Meta:
+        model = RegularHabit
+
+    user = factory.SubFactory(UserFactory)
+    related_habit = factory.SubFactory(RelatedHabitFactory)
+    frequency = factory.LazyAttribute(
+        lambda _: faker.random_element(["еженедельно", "ежедневно"])
+    )
+    award = factory.LazyAttribute(lambda _: faker.text())
+
 
 class EnjoyableRegularHabitFactory(AbstractHabitFactory):
 
@@ -69,4 +85,3 @@ class EnjoyableRegularHabitFactory(AbstractHabitFactory):
     frequency = factory.LazyAttribute(
         lambda _: faker.random_element(["еженедельно", "ежедневно"])
     )
-

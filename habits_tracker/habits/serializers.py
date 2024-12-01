@@ -21,11 +21,18 @@ class RelatedHabitInputSerializer(serializers.ModelSerializer):
         validators = [RelatedHabitValidator("is_enjoyable")]
 
 
-class RelatedHabitOutputSerializer(serializers.Serializer):
-    place = serializers.CharField()
-    action = serializers.CharField()
-    start_time = serializers.DateTimeField()
-    end_time = serializers.DateTimeField()
+# class RelatedHabitOutputSerializer(serializers.Serializer):
+#     place = serializers.CharField()
+#     action = serializers.CharField()
+#     start_time = serializers.DateTimeField()
+#     end_time = serializers.DateTimeField()
+
+
+class RelatedHabitOutputSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = RelatedHabit
+        fields = "__all__"
 
 
 class RegularHabitInputSerializer(serializers.ModelSerializer):
@@ -33,16 +40,42 @@ class RegularHabitInputSerializer(serializers.ModelSerializer):
     related_habit = RelatedHabitInputSerializer(required=False)
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
     award = serializers.CharField(required=False)
+    place = serializers.CharField()
 
     class Meta:
         model = RegularHabit
-        fields = "__all__"
+        fields = [
+            "place",
+            "action",
+            "start_time",
+            "end_time",
+            "public",
+            "is_enjoyable",
+            "user",
+            "related_habit",
+            "frequency",
+            "award",
+        ]
         validators = [
             OneChosenFieldValidator("related_habit", "award"),
             DurationTimeValidator("start_time", "end_time"),
             EnjoyableHabitValidator("award", "related_habit", "is_enjoyable"),
             FrequencyValidator("start_time"),
         ]
+
+
+# class RegularHabitInputSerializer(serializers.Serializer):
+#
+#     place = serializers.CharField()
+#     action = serializers.CharField()
+#     start_time = serializers.DateTimeField()
+#     end_time = serializers.DateTimeField()
+#     public = serializers.BooleanField()
+#     is_enjoyable = serializers.BooleanField(required=False)
+#     user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+#     related_habit = serializers.PrimaryKeyRelatedField(queryset=RegularHabit.objects.all())
+#     frequency = serializers.CharField()
+#     award = serializers.CharField()
 
 
 class RegularHabitOutputSerializer(serializers.ModelSerializer):
