@@ -14,12 +14,25 @@ NULLABLE = {
 class BaseHabit(models.Model):
     """Abstract base model for habits."""
 
+    class Frequency(models.TextChoices):
+        DAILY = "ежедневно"
+        WEEKLY = "еженедельно"
+
     place = models.CharField(max_length=200, verbose_name="место")
     action = models.TextField(verbose_name="действие")
     start_time = models.DateTimeField(verbose_name="время начала")
     end_time = models.DateTimeField(verbose_name="время окончания")
     public = models.BooleanField(verbose_name="публичность")
     is_enjoyable = models.BooleanField(verbose_name="признак приятности")
+    user = models.ForeignKey(
+        User, verbose_name="пользователи", on_delete=models.CASCADE
+    )
+    frequency = models.CharField(
+        max_length=12,
+        choices=Frequency.choices,
+        default=Frequency.DAILY,
+        verbose_name="периодичность",
+    )
 
     class Meta:
         abstract = True
@@ -28,14 +41,6 @@ class BaseHabit(models.Model):
 class RegularHabit(BaseHabit):
     """Model for regular habit."""
 
-    class Frequency(models.TextChoices):
-        DAILY = "ежедневно"
-        WEEKLY = "еженедельно"
-
-    user = models.ForeignKey(
-        User, verbose_name="пользователи", on_delete=models.CASCADE
-    )
-
     related_habit = models.ForeignKey(
         "habits.RelatedHabit",
         **NULLABLE,
@@ -43,12 +48,7 @@ class RegularHabit(BaseHabit):
         verbose_name="желаемая привычка",
         on_delete=models.CASCADE,
     )
-    frequency = models.CharField(
-        max_length=12,
-        choices=Frequency.choices,
-        default=Frequency.DAILY,
-        verbose_name="периодичность",
-    )
+
     award = models.TextField(verbose_name="вознаграждение", **NULLABLE)
 
     class Meta:

@@ -18,7 +18,9 @@ class RegularHabitListAPIView(APIView):
         page_size = 5
         page_size_query_param = "page_size"
 
-    @swagger_auto_schema(responses={200: RegularHabitOutputSerializer(many=True), 400: "Bad request"})
+    @swagger_auto_schema(
+        responses={200: RegularHabitOutputSerializer(many=True), 400: "Bad request"}
+    )
     def get(self, request):
         """Returns list of regular habits."""
         user = self.request.user
@@ -38,7 +40,9 @@ class PublicHabitsListAPIView(APIView):
         page_size = 5
         page_size_query_param = "page_size"
 
-    @swagger_auto_schema(responses={200: RegularHabitOutputSerializer(many=True), 400: "Bad request"})
+    @swagger_auto_schema(
+        responses={200: RegularHabitOutputSerializer(many=True), 400: "Bad request"}
+    )
     def get(self, request):
         """Returns list of habits with set public=True parameter."""
         habits = public_list_habit()
