@@ -1,7 +1,8 @@
+import requests
+
+from config.settings.telegram import TELEGRAM_URL, TELEGRAM_BOT_TOKEN
 from .models import RelatedHabit, RegularHabit
 from .serializers import RegularHabitInputSerializer
-import requests
-from config.settings.telegram import TELEGRAM_URL, TELEGRAM_BOT_TOKEN
 
 
 def create_regular_habit(serializer: RegularHabitInputSerializer):

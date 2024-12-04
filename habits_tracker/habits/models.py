@@ -24,9 +24,6 @@ class BaseHabit(models.Model):
     end_time = models.DateTimeField(verbose_name="время окончания")
     public = models.BooleanField(verbose_name="публичность")
     is_enjoyable = models.BooleanField(verbose_name="признак приятности")
-    user = models.ForeignKey(
-        User, verbose_name="пользователи", on_delete=models.CASCADE
-    )
     frequency = models.CharField(
         max_length=12,
         choices=Frequency.choices,
@@ -50,6 +47,9 @@ class RegularHabit(BaseHabit):
     )
 
     award = models.TextField(verbose_name="вознаграждение", **NULLABLE)
+    user = models.ForeignKey(
+        User, verbose_name="пользователи", on_delete=models.CASCADE
+    )
 
     class Meta:
         verbose_name = "обычная привычка"

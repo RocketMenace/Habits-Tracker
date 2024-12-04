@@ -1,27 +1,21 @@
 from django.db.models import ForeignKey
 
 from .models import RegularHabit
-from django.db.models import ForeignKey
-from rest_framework.permissions import DjangoObjectPermissions
 
 
 def list_habit(user):
-    habits = RegularHabit.objects.prefetch_related("related_habit").filter(user=user)
+    habits = RegularHabit.objects.filter(user=user).prefetch_related("related_habit")
     return habits
 
 
 def public_list_habit():
-    habits = RegularHabit.objects.prefetch_related("related_habit").filter(public=True)
+    habits = RegularHabit.objects.filter(public=True).prefetch_related("related_habit")
     return habits
 
 
 def get_habit(habit_id: int) -> RegularHabit:
     habit = RegularHabit.objects.prefetch_related("related_habit").get(pk=habit_id)
     return habit
-
-
-# def delete_habit(habit_id: int):
-#     RegularHabit.objects.get(pk=habit_id).delete()
 
 
 def update_habit(habit_id: int, data: dict):

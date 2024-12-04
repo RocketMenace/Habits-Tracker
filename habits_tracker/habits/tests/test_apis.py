@@ -16,16 +16,17 @@ from habits_tracker.habits.tests.factories import (
 class RegularHabitTestCase(APITestCase):
 
     def setUp(self):
-        self.related_habit = RelatedHabitFactory()
-        self.user = UserFactory()
+        self.related_habit = factory.build(dict, FACTORY_CLASS=RelatedHabitFactory)
         self.regular_habit = RegularHabitFactory()
+        self.user = UserFactory()
+        # self.regular_habit = factory.build(dict, FACTORY_CLASS=RegularHabitFactory)
         self.client.force_authenticate(user=self.regular_habit.user)
 
     def test_regular_habit_create(self):
         url = reverse("api:habits:create")
         initial_regular_habit_count = RegularHabit.objects.count()
         data = factory.build(dict, FACTORY_CLASS=RegularHabitFactory)
-        data["related_habit"] = factory.build(dict, FACTORY_CLASS=RelatedHabitFactory)
+        data["related_habit"] = self.related_habit
         data["related_habit"]["start_time"] = data["related_habit"][
             "start_time"
         ].strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -61,7 +62,7 @@ class RegularHabitTestCase(APITestCase):
     def test_regular_habit_update(self):
         url = reverse("api:habits:update", args=(self.regular_habit.pk,))
         data = factory.build(dict, FACTORY_CLASS=RegularHabitFactory)
-        data["related_habit"] = factory.build(dict, FACTORY_CLASS=RelatedHabitFactory)
+        data["related_habit"] = self.related_habit
         data["related_habit"]["start_time"] = data["related_habit"][
             "start_time"
         ].strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -93,7 +94,6 @@ class RegularHabitTestCase(APITestCase):
         data["related_habit"] = factory.build(dict, FACTORY_CLASS=RelatedHabitFactory)
         data["start_time"] = data["start_time"].strftime("%Y-%m-%dT%H:%M:%SZ")
         data["end_time"] = data["end_time"].strftime("%Y-%m-%dT%H:%M:%SZ")
-        data.pop("user")
         response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
@@ -102,17 +102,16 @@ class EnjoyableRegularHabitTestCase(APITestCase):
 
     def setUp(self):
         self.user = UserFactory()
-        self.habit = EnjoyableRegularHabitFactory()
+        self.habit = factory.build(dict, FACTORY_CLASS=EnjoyableRegularHabitFactory)
         self.client.force_authenticate(user=self.user)
 
     def test_enjoyable_habit_create(self):
         url = reverse("api:habits:create")
         initial_count = RegularHabit.objects.filter(is_enjoyable=True).count()
-        data = factory.build(dict, FACTORY_CLASS=EnjoyableRegularHabitFactory)
+        data = self.habit
         data["start_time"] = data["start_time"].strftime("%Y-%m-%dT%H:%M:%SZ")
         data["end_time"] = data["end_time"].strftime("%Y-%m-%dT%H:%M:%SZ")
-        data.pop("user")
-        response = self.client.post(url, data)
+        response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(
             RegularHabit.objects.filter(is_enjoyable=True).count(), initial_count + 1
@@ -122,10 +121,9 @@ class EnjoyableRegularHabitTestCase(APITestCase):
 
     def test_enjoyable_habit_with_award_create(self):
         url = reverse("api:habits:create")
-        data = factory.build(dict, FACTORY_CLASS=EnjoyableRegularHabitFactory)
+        data = self.habit
         data["start_time"] = data["start_time"].strftime("%Y-%m-%dT%H:%M:%SZ")
         data["end_time"] = data["end_time"].strftime("%Y-%m-%dT%H:%M:%SZ")
         data["award"] = "Some award"
-        data.pop("user")
-        response = self.client.post(url, data)
+        response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)

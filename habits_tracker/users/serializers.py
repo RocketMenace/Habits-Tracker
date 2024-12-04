@@ -3,10 +3,11 @@ from rest_framework import serializers
 from .models import User
 
 
-class UserOutputSerializer(serializers.Serializer):
+class UserOutputSerializer(serializers.ModelSerializer):
 
-    id = serializers.CharField()
-    email = serializers.EmailField()
+    class Meta:
+        model = User
+        fields = "__all__"
 
 
 class UserInputSerializer(serializers.ModelSerializer):

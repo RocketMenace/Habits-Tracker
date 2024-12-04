@@ -1,11 +1,11 @@
 from rest_framework import status
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated, AllowAny
 
+from .selectors import delete_user, list_user, get_user, update_user
 from .serializers import UserInputSerializer, UserOutputSerializer
 from .services import create_user
-from .selectors import delete_user, list_user, get_user, update_user
 
 
 class UserListAPIView(APIView):
