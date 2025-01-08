@@ -3,6 +3,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
+from habits_tracker.users.models import User
 from habits_tracker.habits.models import RegularHabit
 from habits_tracker.habits.tests.factories import (
     RelatedHabitFactory,
@@ -18,7 +19,7 @@ class RegularHabitTestCase(APITestCase):
     def setUp(self):
         self.related_habit = factory.build(dict, FACTORY_CLASS=RelatedHabitFactory)
         self.regular_habit = RegularHabitFactory()
-        self.user = UserFactory()
+        self.user = User.objects.create_user(email="test4user@gmail.com", password="qwerasdf")
         # self.regular_habit = factory.build(dict, FACTORY_CLASS=RegularHabitFactory)
         self.client.force_authenticate(user=self.regular_habit.user)
 

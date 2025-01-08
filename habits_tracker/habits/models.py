@@ -30,6 +30,9 @@ class BaseHabit(models.Model):
         default=Frequency.DAILY,
         verbose_name="периодичность",
     )
+    user = models.ForeignKey(
+        User, verbose_name="пользователи", on_delete=models.CASCADE
+    )
 
     class Meta:
         abstract = True
@@ -47,9 +50,7 @@ class RegularHabit(BaseHabit):
     )
 
     award = models.TextField(verbose_name="вознаграждение", **NULLABLE)
-    user = models.ForeignKey(
-        User, verbose_name="пользователи", on_delete=models.CASCADE
-    )
+
 
     class Meta:
         verbose_name = "обычная привычка"
